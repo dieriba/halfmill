@@ -1,0 +1,8 @@
+[package]
+name = "halfmill-server"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+tokio.workspace = true

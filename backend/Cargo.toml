@@ -1,15 +1,28 @@
-[package]
-name = "backend"
+[workspace]
+members = [ "halfmill-api",  "halfmill-queue","halfmill-server", "halfmill-worker"]
+
+resolver = "2"
+
+
+[workspace.package]
 version = "0.1.0"
+authors = ["Dieri"]
 edition = "2021"
 
-[dependencies]
-anyhow = "1.0.89"
-axum = "0.7.6"
-mio = "1.0.2"
-serde = "1.0.210"
-thiserror = "1.0.64"
-tokio = { version = "1.40.0", features = ["full"] }
+
+[workspace.dependencies]
+halfmill-api = { path = "./halfmill-api" }
+halfmill-queue = { path = "./halfmill-queue" }
+halfmill-worker = { path = "./halfmill-worker" }
+
+axum = { version = "^0.7", features = ["multipart"] }
+headers = "^0"
+hyper = { version = "^1", features = ["full"] }
+tokio = { version = "^1", features = ["full", "tracing"] }
+serde = "^1"
+serde_json = { version = "^1", features = ["preserve_order", "raw_value"] }
+thiserror = "^1"
+anyhow = "^1"
 sqlx = { version = "0.8.0", features = [
     "macros",
     "migrate",
@@ -20,3 +33,5 @@ sqlx = { version = "0.8.0", features = [
     "runtime-tokio-rustls",
     "bigdecimal"
 ] }
+reqwest = { version = "^0.12", features = ["json", "stream", "gzip"] }
+cron = "^0"

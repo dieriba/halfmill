@@ -1,0 +1,7 @@
+[package]
+name = "halfmill-queue"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
