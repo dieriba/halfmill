@@ -13,8 +13,10 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: changeme
-      POSTGRES_DB: windmill
+      POSTGRES_USER: ${POSTGRES_USER:?error}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?:error}
+      POSTGRES_DB: ${POSTGRES_DB?:error}
+      DATABASE_URL: ${DATABASE_URL?:error}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
