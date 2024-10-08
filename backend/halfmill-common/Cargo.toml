@@ -1,11 +1,10 @@
 [package]
-name = "halfmill-server"
+name = "halfmill-common"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
 
 [dependencies]
-tokio.workspace = true
 anyhow.workspace = true
-halfmill-common.workspace = true
-dotenv.workspace = true
+thiserror.workspace = true
+chrono.workspace = true

@@ -5,3 +5,6 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+halfmill-queue.workspace = true
+halfmill-server = { version = "0.1.0", path = "../halfmill-server" }
+halfmill-worker.workspace = true
