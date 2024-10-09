@@ -8,3 +8,5 @@ edition.workspace = true
 anyhow.workspace = true
 thiserror.workspace = true
 chrono.workspace = true
+sqlx.workspace = true
+serde.workspace = true

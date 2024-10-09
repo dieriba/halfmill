@@ -15,7 +15,7 @@ pub fn config() -> &'static Config {
 }
 
 pub struct Config {
-    database_url: String,
+    pub database_url: String,
 }
 
 impl Config {

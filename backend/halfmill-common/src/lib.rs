@@ -1,6 +1,7 @@
 pub mod config;
-mod db;
-mod model;
+mod database;
+
+pub use database::Database;
 
 #[cfg(test)]
 mod tests {
