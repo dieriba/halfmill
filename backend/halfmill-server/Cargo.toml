@@ -8,4 +8,4 @@ edition.workspace = true
 tokio.workspace = true
 anyhow.workspace = true
 halfmill-common.workspace = true
-dotenv.workspace = true
+dotenvy.workspace = true

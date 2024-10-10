@@ -1,11 +1,15 @@
 use anyhow::Result;
 use halfmill_common::{config::config, Database};
+use std::env;
 
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 
 async fn futures() -> Result<()> {
-    dotenv::dotenv().ok();
+    let curr_dir = env::current_dir()?;
+    let env_path = curr_dir.parent().unwrap().join(".env");
+    dotenvy::from_path(env_path)?;
+
     let _ = config();
     let database = Database::new().await?;
     Ok(())
