@@ -9,3 +9,6 @@ tokio.workspace = true
 anyhow.workspace = true
 halfmill-common.workspace = true
 dotenvy.workspace = true
+halfmill-api.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

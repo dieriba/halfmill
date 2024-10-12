@@ -10,3 +10,5 @@ thiserror.workspace = true
 chrono.workspace = true
 sqlx.workspace = true
 serde.workspace = true
+axum.workspace = true
+tracing.workspace = true

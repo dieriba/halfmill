@@ -1,7 +1,7 @@
 pub mod config;
 mod database;
 
-pub use database::Database;
+pub use database::*;
 
 #[cfg(test)]
 mod tests {

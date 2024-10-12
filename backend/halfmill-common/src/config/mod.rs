@@ -9,19 +9,22 @@ pub fn config() -> &'static Config {
 
     CONFIG.get_or_init(|| {
         Config::new().unwrap_or_else(|err| {
-            panic!("{err}");
+            tracing::error!("{err}");
+            panic!();
         })
     })
 }
 
 pub struct Config {
     pub database_url: String,
+    pub backend_port: String,
 }
 
 impl Config {
     pub fn new() -> Result<Self> {
         Ok(Self {
             database_url: get_env("DATABASE_URL")?,
+            backend_port: get_env("BACKEND_PORT")?,
         })
     }
 }

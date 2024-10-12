@@ -2,16 +2,16 @@ use anyhow::Result;
 use halfmill_common::{config::config, Database};
 use std::env;
 
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpListener;
-
 async fn futures() -> Result<()> {
+    tracing_subscriber::fmt::init();
     let curr_dir = env::current_dir()?;
     let env_path = curr_dir.parent().unwrap().join(".env");
     dotenvy::from_path(env_path)?;
 
     let _ = config();
-    let database = Database::new().await?;
+    let database = Database::connect().await?;
+    let (tx, rx) = tokio::sync::oneshot::channel::<()>();
+    halfmill_api::start_server(database, rx).await?;
     Ok(())
 }
 

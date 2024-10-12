@@ -1,9 +1,8 @@
+use super::Database;
 use anyhow::Result;
+use axum::debug_handler;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
-
-use super::Database;
-
 #[derive(Debug, FromRow, Serialize)]
 pub struct User {
     pub username: String,
