@@ -14,12 +14,12 @@ pub struct Database {
 
 impl Database {
     pub async fn connect() -> Result<Self> {
-        tracing::info!("Acquiring pool of database connections...");
+        tracing::info!("Trying to acquire pool of database connections...");
         let connection_pool = PgPoolOptions::new()
             .max_connections(10)
             .connect(&config().database_url)
             .await?;
-        tracing::info!("Pool Acquired successfully!");
+        tracing::info!("Pool of connections acquired, successfully connected to database!");
         Ok(Self { connection_pool })
     }
 

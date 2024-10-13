@@ -1,0 +1,5 @@
+pub const USERNAME_MIN_LENGTH: u64 = 3;
+pub const USERNAME_MAX_LENGTH: u64 = 20;
+
+pub const PASSWORD_MIN_LENGTH: u64 = 8;
+pub const PASSWORD_MAX_LENGTH: u64 = 50;

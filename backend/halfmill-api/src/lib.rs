@@ -1,8 +1,7 @@
 mod app_state;
-mod jobs;
 mod script;
-mod user;
-
+mod users;
+mod extractors;
 use anyhow::Result;
 use app_state::init_app_state;
 use axum::{
@@ -16,7 +15,7 @@ use tower_http::{
     cors::{Any, CorsLayer},
     trace::TraceLayer,
 };
-use user::user_service;
+use users::user_service;
 
 pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
     let port = &config().backend_port;
@@ -41,12 +40,13 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
     let server = axum::serve(listener, app);
 
     let graceful = server.with_graceful_shutdown(async move {
-        tracing::info!("Server is listening on port: {port}");
+        tracing::info!("Server is now listening on port: {port}");
         rx.await.ok();
+        tracing::info!("Server gracefully shutdown!!");
     });
 
     if let Err(e) = graceful.await {
-        eprintln!("server error: {}", e);
+        tracing::error!("server error: {}", e);
     }
 
     Ok(())
