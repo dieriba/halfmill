@@ -1,6 +1,6 @@
 mod user;
 
-use crate::config::config;
+use crate::{config::config, POOL_CONNECTIONS};
 use anyhow::Result;
 use sqlx::{postgres::PgPoolOptions, PgPool};
 pub use user::*;
@@ -16,7 +16,7 @@ impl Database {
     pub async fn connect() -> Result<Self> {
         tracing::info!("Trying to acquire pool of database connections...");
         let connection_pool = PgPoolOptions::new()
-            .max_connections(10)
+            .max_connections(POOL_CONNECTIONS)
             .connect(&config().database_url)
             .await?;
         tracing::info!("Pool of connections acquired, successfully connected to database!");

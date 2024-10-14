@@ -10,7 +10,7 @@ async fn futures() -> Result<()> {
 
     let _ = config();
     let database = Database::connect().await?;
-    let (tx, rx) = tokio::sync::oneshot::channel::<()>();
+    let (_, rx) = tokio::sync::oneshot::channel::<()>();
     halfmill_api::start_server(database, rx).await?;
     Ok(())
 }

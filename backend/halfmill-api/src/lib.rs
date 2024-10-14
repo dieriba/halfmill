@@ -1,13 +1,15 @@
 mod app_state;
+mod extractors;
 mod script;
 mod users;
-mod extractors;
 use anyhow::Result;
 use app_state::init_app_state;
 use axum::{
     http::{self, Method},
     Router,
 };
+mod auth;
+use auth::auth_service;
 use halfmill_common::{config::config, Database};
 use tokio::sync::oneshot::Receiver;
 use tower::ServiceBuilder;
@@ -32,7 +34,12 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
         .layer(cors);
 
     let app = Router::new()
-        .nest("/api", Router::new().nest("/user", user_service()))
+        .nest(
+            "/api",
+            Router::new()
+                .nest("/auth", auth_service())
+                .nest("/user", user_service()),
+        )
         .layer(ServiceBuilder::new().layer(services))
         .with_state(init_app_state(database))
         .fallback(|| async { (http::StatusCode::NOT_FOUND, "Ressource Not found") });

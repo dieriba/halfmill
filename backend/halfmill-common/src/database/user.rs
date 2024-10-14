@@ -1,6 +1,5 @@
 use super::Database;
 use anyhow::Result;
-use axum::debug_handler;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 #[derive(Debug, FromRow, Serialize)]
@@ -18,10 +17,7 @@ pub struct UserAction;
 
 impl UserAction {
     pub async fn create(database: &Database) -> Result<String> {
-        let pool = database.db();
-
-        //        let query = sqlx::query_as::<_, String>("INSERT INTO user ");
-
+        let _ = database.db();
         Ok(String::new())
     }
 }
