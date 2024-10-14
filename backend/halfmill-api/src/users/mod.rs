@@ -8,6 +8,6 @@ async fn get_user(State(database): State<Database>) -> &'static str {
     "Me"
 }
 
-pub fn user_service() -> Router<AppStateWrapper> {
+pub fn user_service() -> Router<AppStateWrapper<'static>> {
     Router::new().route("/me", get(get_user))
 }

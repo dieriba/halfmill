@@ -28,7 +28,6 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
         .allow_origin(Any);
-
     let services = ServiceBuilder::new()
         .layer(TraceLayer::new_for_http())
         .layer(cors);

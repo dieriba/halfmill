@@ -5,6 +5,7 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
+use halfmill_common::{ErrorsResponse, SingleErrorResponse};
 use serde::{de::DeserializeOwned, Serialize};
 use thiserror::Error;
 use validator::Validate;
@@ -42,11 +43,6 @@ pub enum ServerError {
     AxumRejectionError(JsonRejection),
 }
 
-#[derive(Serialize, Debug)]
-pub struct ErrorResponse {
-    message: Vec<String>,
-}
-
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response {
         let error_message = match self {
@@ -65,12 +61,7 @@ impl IntoResponse for ServerError {
             }
             Self::AxumRejectionError(err) => {
                 let error_message = err.body_text();
-                return (
-                    err.status(),
-                    Json(ErrorResponse {
-                        message: vec![error_message],
-                    }),
-                )
+                return (err.status(), Json(SingleErrorResponse::new(error_message)))
                     .into_response();
             }
             _ => unreachable!(),
@@ -78,9 +69,7 @@ impl IntoResponse for ServerError {
 
         (
             StatusCode::BAD_REQUEST,
-            Json(ErrorResponse {
-                message: error_message,
-            }),
+            Json(ErrorsResponse::new(error_message)),
         )
             .into_response()
     }
