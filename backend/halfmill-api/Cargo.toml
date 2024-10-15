@@ -18,3 +18,4 @@ validator.workspace = true
 serde.workspace = true
 async-trait.workspace = true
 thiserror.workspace = true
+uuid.workspace = true

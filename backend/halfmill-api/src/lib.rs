@@ -23,12 +23,7 @@ use tower_http::{
 use users::user_service;
 
 pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
-    let Config {
-        backend_port,
-        access_token_secret,
-        refresh_token_secret,
-        ..
-    } = config();
+    let Config { backend_port, .. } = config();
     let port = backend_port.as_str();
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config().backend_port))
         .await
@@ -41,6 +36,8 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
         .layer(TraceLayer::new_for_http())
         .layer(cors);
 
+    let app_state = init_app_state(database);
+
     let app = Router::new()
         .nest(
             "/api",
@@ -49,7 +46,7 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
                 .nest("/user", user_service()),
         )
         .layer(ServiceBuilder::new().layer(services))
-        .with_state(init_app_state(database))
+        .with_state(app_state)
         .fallback(|| async { (http::StatusCode::NOT_FOUND, "Ressource Not found") });
 
     let server = axum::serve(listener, app);

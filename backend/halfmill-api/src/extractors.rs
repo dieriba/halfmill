@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use halfmill_common::{ErrorsResponse, SingleErrorResponse};
-use serde::{de::DeserializeOwned, Serialize};
+use serde::de::DeserializeOwned;
 use thiserror::Error;
 use validator::Validate;
 

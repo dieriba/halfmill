@@ -1,12 +1,16 @@
 use std::sync::Arc;
 
 use axum::extract::FromRef;
-use halfmill_common::{Database, PasswordManager};
+use halfmill_common::{
+    config::{config, Config},
+    Database, JWTManager, PasswordManager,
+};
 
 #[derive(Clone)]
 pub struct AppState<'key> {
     pub database: Database,
     pub password_manager: Arc<PasswordManager<'key>>,
+    pub jwt_manager: Arc<JWTManager>,
 }
 #[derive(Clone)]
 pub struct AppStateWrapper<'key>(pub Arc<AppState<'key>>);
@@ -18,8 +22,14 @@ impl<'key> FromRef<AppStateWrapper<'key>> for Database {
 }
 
 pub fn init_app_state<'key>(database: Database) -> AppStateWrapper<'key> {
+    let Config {
+        access_token_secret,
+        refresh_token_secret,
+        ..
+    } = config();
     AppStateWrapper(Arc::new(AppState {
         database,
         password_manager: Arc::new(PasswordManager::default()),
+        jwt_manager: Arc::new(JWTManager::new(access_token_secret, refresh_token_secret)),
     }))
 }
