@@ -43,7 +43,7 @@ async fn signin(
             })?;
     let password_manager = &state.password_manager;
     password_manager.compare_password(password.as_bytes(), &user.password)?;
-
+    
     Ok(Json(user))
 }
 

@@ -13,3 +13,5 @@ serde.workspace = true
 axum.workspace = true
 tracing.workspace = true
 argon2.workspace = true
+jsonwebtoken.workspace = true
+uuid.workspace = true

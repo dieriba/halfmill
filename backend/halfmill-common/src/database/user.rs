@@ -4,11 +4,23 @@ use crate::Error;
 
 use super::Database;
 use serde::{Deserialize, Serialize};
-use sqlx::{postgres::PgRow, FromRow, QueryBuilder};
+use sqlx::{postgres::PgRow,  FromRow, QueryBuilder};
 use user_row::Deserializable;
+use uuid::Uuid;
 mod user_row {
     pub trait Deserializable {
-        fn query<'criteria>(criteria: &'criteria str) -> String;
+        fn query(criteria: &str) -> String;
+    }
+}
+
+#[derive(Debug, FromRow, Serialize, Deserialize)]
+pub struct UserId {
+    pub username: Uuid,
+}
+
+impl user_row::Deserializable for UserId {
+    fn query(criteria: &str) -> String {
+        format!("SELECT id FROM users WHERE {} = ", criteria)
     }
 }
 
@@ -160,7 +172,7 @@ where
             match err {    
                 sqlx::Error::RowNotFound => Error::NotFound("User not found".to_string()),
                 sqlx::Error::ColumnNotFound(column) => {
-                    tracing::error!("You probably give out the wrong column name to the query double check it please!, here was the the searched column: {}", column);
+                    tracing::error!("You probably give out the wrong column name to the query or did not retrieve it double check it please!, here was the the searched column: {}", column);
                     Error::InternalErr("internal server error".to_string())
                 }
             _ => Error::InternalErr(err.to_string())

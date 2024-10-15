@@ -10,7 +10,10 @@ use axum::{
 };
 mod auth;
 use auth::auth_service;
-use halfmill_common::{config::config, Database};
+use halfmill_common::{
+    config::{config, Config},
+    Database, JWTManager,
+};
 use tokio::sync::oneshot::Receiver;
 use tower::ServiceBuilder;
 use tower_http::{
@@ -20,7 +23,13 @@ use tower_http::{
 use users::user_service;
 
 pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
-    let port = &config().backend_port;
+    let Config {
+        backend_port,
+        access_token_secret,
+        refresh_token_secret,
+        ..
+    } = config();
+    let port = backend_port.as_str();
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", config().backend_port))
         .await
         .unwrap();

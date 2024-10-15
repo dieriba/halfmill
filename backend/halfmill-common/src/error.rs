@@ -16,6 +16,8 @@ pub enum Error {
     BadRequest(String),
     #[error("{0}")]
     AlreadyExists(String),
+    #[error("{0}")]
+    Unauthorized(String),
 }
 
 impl IntoResponse for Error {

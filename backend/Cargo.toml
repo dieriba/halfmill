@@ -21,8 +21,7 @@ axum = { version = "^0.7", features = ["multipart", "macros"] }
 headers = "^0"
 hyper = { version = "^1", features = ["full"] }
 tokio = { version = "^1", features = ["full", "tracing"] }
-serde = "^1"
-serde_json = { version = "^1", features = ["preserve_order", "raw_value"] }
+serde = {version = "^1", features = ["derive"]}
 thiserror = "^1"
 anyhow = "^1"
 sqlx = { version = "0.8.0", features = [
@@ -44,3 +43,5 @@ chrono = "0.4.38"
 validator = { version = "0.18.1", features = ["derive"] }
 async-trait = "0.1.83"
 argon2 = "0.5.3"
+jsonwebtoken = "9.3.0"
+uuid = {version =  "1.10.0", features = ["serde"]}

@@ -18,13 +18,17 @@ pub fn config() -> &'static Config {
 pub struct Config {
     pub database_url: String,
     pub backend_port: String,
+    pub access_token_secret: String,
+    pub refresh_token_secret: String,
 }
 
 impl Config {
-    pub fn new() -> Result<Self> {
+    fn new() -> Result<Self> {
         Ok(Self {
             database_url: get_env("DATABASE_URL")?,
             backend_port: get_env("BACKEND_PORT")?,
+            access_token_secret: get_env("ACCESS_TOKEN_SECRET")?,
+            refresh_token_secret: get_env("REFRESH_TOKEN_SECRET")?,
         })
     }
 }
