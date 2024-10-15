@@ -13,9 +13,15 @@ mod user_row {
     }
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
 pub struct UserId {
     pub id: Uuid,
+}
+
+impl UserId {
+    pub fn new(id: Uuid) -> Self {
+        Self { id }
+    }
 }
 
 impl user_row::Deserializable for UserId {
@@ -31,15 +37,27 @@ pub struct UserIdWithPassword {
     pub password: String
 }
 
+impl UserIdWithPassword {
+    pub fn new(id: Uuid, password:String) -> Self {
+        Self { id, password }
+    }
+}
+
 impl user_row::Deserializable for UserIdWithPassword {
     fn query(criteria: &str) -> String {
         format!("SELECT id, password FROM users WHERE {} = ", criteria)
     }
 }
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct User {
     pub username: String,
+}
+
+impl User {
+    pub fn new(username: String) -> Self {
+        Self { username }
+    }
 }
 
 impl user_row::Deserializable for User {
@@ -103,7 +121,7 @@ impl UserAction {
             + 'static
             + user_row::Deserializable,
     {
-        get_by(database, "username", username, PhantomData).await
+        get_by(database, "username", username, PhantomData, None).await
     }
 
     pub async fn get_by_id<'de, T>(database: &Database, id: &str) -> Result<T, HttpError>
@@ -116,7 +134,7 @@ impl UserAction {
             + 'static
             + user_row::Deserializable,
     {
-        get_by(database, "id", id, PhantomData).await
+        get_by(database, "id", id, PhantomData, Some(())).await
     }
 
     pub async fn check_if_already_exist_by_username(
@@ -158,6 +176,7 @@ async fn get_by<'de, T>(
     predicate_key: &str,
     predicate_value: &str,
     _marker: PhantomData<T>,
+    search_by_id: Option<()>
 ) -> Result<T, HttpError>
 where
     T: Send
@@ -170,12 +189,16 @@ where
 {
     let query = match TypeId::of::<T>() {
         id if id == TypeId::of::<User>() => User::query(predicate_key),
+        id if id == TypeId::of::<UserId>() => UserId::query(predicate_key),
         id if id == TypeId::of::<UserWithPassword>() => UserWithPassword::query(predicate_key),
         id if id == TypeId::of::<UserIdWithPassword>() => UserIdWithPassword::query(predicate_key),
         _ => unreachable!(),
     };
     let mut query = QueryBuilder::new(query);
     query.push_bind(predicate_value);
+    if search_by_id.is_some() {
+        query.push("::uuid");
+    }
     query.build_query_as()
         .bind(predicate_key)
         .bind(predicate_value)

@@ -20,6 +20,8 @@ pub struct Config {
     pub backend_port: String,
     pub access_token_secret: String,
     pub refresh_token_secret: String,
+    pub access_token_max_age: String,
+    pub refresh_token_max_age: String,
 }
 
 impl Config {
@@ -29,6 +31,8 @@ impl Config {
             backend_port: get_env("BACKEND_PORT")?,
             access_token_secret: get_env("ACCESS_TOKEN_SECRET")?,
             refresh_token_secret: get_env("REFRESH_TOKEN_SECRET")?,
+            access_token_max_age: get_env("ACCESS_TOKEN_MAX_AGE")?,
+            refresh_token_max_age: get_env("REFRESH_TOKEN_MAX_AGE")?,
         })
     }
 }

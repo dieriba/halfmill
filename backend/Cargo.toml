@@ -45,3 +45,4 @@ async-trait = "0.1.83"
 argon2 = "0.5.3"
 jsonwebtoken = "9.3.0"
 uuid = {version =  "1.10.0", features = ["serde"]}
+axum-extra = {version = "0.9.4", features = ["cookie"]}

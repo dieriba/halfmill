@@ -3,13 +3,20 @@ use jsonwebtoken::{
     Validation,
 };
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::{HttpError, UserId};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    exp: usize,
+pub struct Claims {
+    pub sub: Uuid,
+    pub exp: usize,
+}
+
+impl Claims {
+    pub fn new(sub: Uuid, exp: usize) -> Self {
+        Self { sub, exp }
+    }
 }
 pub struct JWTManager {
     header: Header,
@@ -34,11 +41,11 @@ impl JWTManager {
         }
     }
 
-    pub fn get_access_token(&self, data: UserId) -> Result<String, HttpError> {
+    pub fn get_access_token(&self, data: &Claims) -> Result<String, HttpError> {
         get_token(&self.header, data, &self.encoded_access_token)
     }
 
-    pub fn get_refresh_token(&self, data: UserId) -> Result<String, HttpError> {
+    pub fn get_refresh_token(&self, data: &Claims) -> Result<String, HttpError> {
         get_token(&self.header, data, &self.encoded_refresh_token)
     }
 
@@ -57,11 +64,15 @@ impl JWTManager {
             &self.validation_algorithm,
         )
     }
+
+    pub fn get_current_timestamp() -> u64 {
+        jsonwebtoken::get_current_timestamp()
+    }
 }
 
 fn get_token(
     header: &Header,
-    data: UserId,
+    data: &Claims,
     encoding_key: &EncodingKey,
 ) -> Result<String, HttpError> {
     encode(header, &data, encoding_key).map_err(|_| HttpError::internal_server_error())
@@ -72,7 +83,7 @@ fn validate_token(
     decoding_key: &DecodingKey,
     validation_algorithm: &Validation,
 ) -> Result<UserId, HttpError> {
-    let TokenData { claims, .. } = decode::<UserId>(token, decoding_key, validation_algorithm)
+    let TokenData { claims, .. } = decode::<Claims>(token, decoding_key, validation_algorithm)
         .map_err(|err| match err.into_kind() {
             ErrorKind::ExpiredSignature | ErrorKind::InvalidSignature => HttpError::unauthorized(),
             e => {
@@ -80,5 +91,6 @@ fn validate_token(
                 HttpError::internal_server_error()
             }
         })?;
-    Ok(claims)
+    println!("{:#?}", claims);
+    Ok(UserId::new(claims.sub))
 }

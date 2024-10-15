@@ -21,6 +21,12 @@ impl<'key> FromRef<AppStateWrapper<'key>> for Database {
     }
 }
 
+impl<'key> FromRef<AppStateWrapper<'key>> for Arc<JWTManager> {
+    fn from_ref(app_state: &AppStateWrapper) -> Arc<JWTManager> {
+        app_state.0.jwt_manager.clone()
+    }
+}
+
 pub fn init_app_state<'key>(database: Database) -> AppStateWrapper<'key> {
     let Config {
         access_token_secret,
