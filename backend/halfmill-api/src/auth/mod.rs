@@ -32,7 +32,7 @@ async fn signin(
         return Err(wrong_credentials_error);
     }
     let user =
-        UserAction::get_by_username::<UserWithPassword>(&state.database, username.as_bytes())
+        UserAction::get_by_username::<UserWithPassword>(&state.database, &username)
             .await
             .map_err(|e| {
                 if let Error::NotFound(_) = e {
@@ -41,7 +41,6 @@ async fn signin(
                     e
                 }
             })?;
-    tracing::info!("After");
     let password_manager = &state.password_manager;
     password_manager.compare_password(password.as_bytes(), &user.password)?;
 

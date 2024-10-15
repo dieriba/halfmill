@@ -4,11 +4,11 @@ use crate::Error;
 
 use super::Database;
 use serde::{Deserialize, Serialize};
-use sqlx::{postgres::PgRow, FromRow};
+use sqlx::{postgres::PgRow, FromRow, QueryBuilder};
 use user_row::Deserializable;
 mod user_row {
     pub trait Deserializable {
-        fn query() -> &'static str;
+        fn query<'criteria>(criteria: &'criteria str) -> String;
     }
 }
 
@@ -18,8 +18,8 @@ pub struct User {
 }
 
 impl user_row::Deserializable for User {
-    fn query() -> &'static str {
-        "SELECT username FROM users WHERE ($1)='($2)'"
+    fn query(criteria: &str) -> String {
+        format!("SELECT username FROM users WHERE {} = ", criteria)
     }
 }
 
@@ -31,8 +31,8 @@ pub struct UserWithPassword {
 }
 
 impl user_row::Deserializable for UserWithPassword {
-    fn query() -> &'static str {
-        "SELECT username, password FROM users WHERE ($1)='($2)'"
+    fn query(criteria: &str) -> String {
+        format!("SELECT username , password FROM users WHERE {} = ", criteria)
     }
 }
 
@@ -68,7 +68,7 @@ impl UserAction {
         })
     }
 
-    pub async fn get_by_username<'de, T>(database: &Database, username: &[u8]) -> Result<T, Error>
+    pub async fn get_by_username<'de, T>(database: &Database, username: &str) -> Result<T, Error>
     where
         T: Send
             + Unpin
@@ -81,7 +81,7 @@ impl UserAction {
         get_by(database, "username", username, PhantomData).await
     }
 
-    pub async fn get_by_id<'de, T>(database: &Database, id: &[u8]) -> Result<T, Error>
+    pub async fn get_by_id<'de, T>(database: &Database, id: &str) -> Result<T, Error>
     where
         T: Send
             + Unpin
@@ -131,7 +131,7 @@ impl UserAction {
 async fn get_by<'de, T>(
     database: &Database,
     predicate_key: &str,
-    predicate_value: &[u8],
+    predicate_value: &str,
     _marker: PhantomData<T>,
 ) -> Result<T, Error>
 where
@@ -144,12 +144,13 @@ where
         + user_row::Deserializable,
 {
     let query = match TypeId::of::<T>() {
-        id if id == TypeId::of::<User>() => User::query(),
-        id if id == TypeId::of::<UserWithPassword>() => UserWithPassword::query(),
+        id if id == TypeId::of::<User>() => User::query(predicate_key),
+        id if id == TypeId::of::<UserWithPassword>() => UserWithPassword::query(predicate_key),
         _ => unreachable!(),
     };
-
-    sqlx::query_as::<_, T>(query)
+    let mut query = QueryBuilder::new(query);
+    query.push_bind(predicate_value);
+    query.build_query_as()
         .bind(predicate_key)
         .bind(predicate_value)
         .fetch_one(database.db())
@@ -159,7 +160,7 @@ where
             match err {    
                 sqlx::Error::RowNotFound => Error::NotFound("User not found".to_string()),
                 sqlx::Error::ColumnNotFound(column) => {
-                    tracing::info!("You probably give out the wrong column name to the query double check it please!, here was the the searched column: {}", column);
+                    tracing::error!("You probably give out the wrong column name to the query double check it please!, here was the the searched column: {}", column);
                     Error::InternalErr("internal server error".to_string())
                 }
             _ => Error::InternalErr(err.to_string())

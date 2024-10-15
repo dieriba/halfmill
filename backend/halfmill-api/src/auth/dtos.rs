@@ -28,7 +28,7 @@ pub struct LoginUserDto {
     ))]
     pub username: String,
     #[validate(length(
-        min = PASSWORD_MIN_LENGTH,
+        min = 1,
         message = "password must be not empty"
     ))]
     pub password: String,
