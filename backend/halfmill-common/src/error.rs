@@ -13,6 +13,8 @@ pub enum Error {
     #[error("{0}")]
     NotFound(String),
     #[error("{0}")]
+    BadRequest(String),
+    #[error("{0}")]
     AlreadyExists(String),
 }
 
@@ -21,6 +23,7 @@ impl IntoResponse for Error {
         let status = match self {
             Self::NotFound(_) => StatusCode::NOT_FOUND,
             Self::AlreadyExists(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            Self::BadRequest(_) => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
