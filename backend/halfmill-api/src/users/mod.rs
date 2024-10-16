@@ -1,4 +1,3 @@
-mod dtos;
 use axum::{routing::get, Router};
 mod controller;
 mod services;

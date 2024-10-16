@@ -1,5 +1,5 @@
 use super::constant::*;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use validator::Validate;
 #[derive(Validate, Deserialize)]
 pub struct CreateUserDto {
@@ -20,16 +20,13 @@ pub struct CreateUserDto {
     confirm_password: String,
 }
 
-#[derive(Validate, Deserialize, Serialize)]
+#[derive(Validate, Deserialize)]
 pub struct LoginUserDto {
     #[validate(length(
         min = USERNAME_MIN_LENGTH,
         message = "username must not be empty"
     ))]
     pub username: String,
-    #[validate(length(
-        min = 1,
-        message = "password must be not empty"
-    ))]
+    #[validate(length(min = 1, message = "password must be not empty"))]
     pub password: String,
 }

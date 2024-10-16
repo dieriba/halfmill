@@ -10,6 +10,7 @@ use halfmill_common::{
     config::{config, Config},
     Database,
 };
+use script::script_service;
 use tokio::sync::oneshot::Receiver;
 use tower::ServiceBuilder;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
@@ -41,13 +42,22 @@ pub async fn start_server(database: Database, rx: Receiver<()>) -> Result<()> {
     let app = Router::new()
         .nest(
             "/api",
-            Router::new().nest("/auth", auth_service()).nest(
-                "/user",
-                user_service().layer(axum::middleware::from_fn_with_state(
-                    app_state.clone(),
-                    middleware::authenticate_middleware,
-                )),
-            ),
+            Router::new()
+                .nest("/auth", auth_service())
+                .nest(
+                    "/user",
+                    user_service().layer(axum::middleware::from_fn_with_state(
+                        app_state.clone(),
+                        middleware::authenticate_middleware,
+                    )),
+                )
+                .nest(
+                    "/script",
+                    script_service().layer(axum::middleware::from_fn_with_state(
+                        app_state.clone(),
+                        middleware::authenticate_middleware,
+                    )),
+                ),
         )
         .layer(ServiceBuilder::new().layer(services))
         .with_state(app_state)
