@@ -1,6 +1,5 @@
 use jsonwebtoken::{
-    decode, encode, errors::ErrorKind, Algorithm, DecodingKey, EncodingKey, Header, TokenData,
-    Validation,
+    decode, encode, errors::ErrorKind, DecodingKey, EncodingKey, Header, TokenData, Validation,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -34,10 +33,10 @@ impl JWTManager {
         Self {
             header: Header::default(),
             encoded_access_token: EncodingKey::from_secret(access_token_secret),
-            encoded_refresh_token: EncodingKey::from_secret(access_token_secret),
+            encoded_refresh_token: EncodingKey::from_secret(refresh_token_secret),
             decoding_access_token: DecodingKey::from_secret(access_token_secret),
             decoding_refresh_token: DecodingKey::from_secret(refresh_token_secret),
-            validation_algorithm: Validation::new(Algorithm::HS256),
+            validation_algorithm: Validation::default(),
         }
     }
 

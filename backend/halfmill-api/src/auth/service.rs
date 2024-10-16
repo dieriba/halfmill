@@ -5,7 +5,6 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use chrono::{Duration, Utc};
 
 use super::constant::{PASSWORD_MAX_LENGTH, USERNAME_MAX_LENGTH};
 use super::dtos::{CreateUserDto, LoginUserDto};
@@ -71,11 +70,11 @@ pub async fn signin(
         ..
     } = config();
     let now = JWTManager::get_current_timestamp();
-    let access_token_duration = access_token_max_age.parse::<u64>().unwrap();
-    let refresh_token_duration = refresh_token_max_age.parse::<u64>().unwrap();
-    let mut data = Claims::new(id, (now + access_token_duration) as usize);
+    let access_token_duration = access_token_max_age.parse::<usize>().unwrap();
+    let refresh_token_duration = refresh_token_max_age.parse::<usize>().unwrap();
+    let mut data = Claims::new(id, now as usize + access_token_duration);
     let acces_token = jwt_manager.get_access_token(&data)?;
-    data.exp = (now + refresh_token_duration) as usize;
+    data.exp = now as usize + refresh_token_duration;
     let refresh_token = jwt_manager.get_refresh_token(&data)?;
 
     let access_token_cookie = format!(

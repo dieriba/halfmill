@@ -64,7 +64,6 @@ impl IntoResponse for ServerError {
                 return (err.status(), Json(SingleErrorResponse::new(error_message)))
                     .into_response();
             }
-            _ => unreachable!(),
         };
 
         (
