@@ -5,3 +5,8 @@ authors.workspace = true
 edition.workspace = true
 
 [dependencies]
+chrono.workspace = true
+tokio.workspace = true
+axum.workspace = true
+halfmill-common.workspace = true
+serde.workspace = true

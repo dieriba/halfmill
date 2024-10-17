@@ -22,6 +22,7 @@ pub struct Config {
     pub refresh_token_secret: String,
     pub access_token_max_age: String,
     pub refresh_token_max_age: String,
+    pub server_directory: String,
 }
 
 impl Config {
@@ -33,6 +34,7 @@ impl Config {
             refresh_token_secret: get_env("REFRESH_TOKEN_SECRET")?,
             access_token_max_age: get_env("ACCESS_TOKEN_MAX_AGE")?,
             refresh_token_max_age: get_env("REFRESH_TOKEN_MAX_AGE")?,
+            server_directory: get_env("SERVER_DIRECTORY_PATH")?,
         })
     }
 }

@@ -788,6 +788,13 @@ dependencies = [
 [[package]]
 name = "halfmill-worker"
 version = "0.1.0"
+dependencies = [
+ "axum",
+ "chrono",
+ "halfmill-common",
+ "serde",
+ "tokio",
+]
 
 [[package]]
 name = "hashbrown"

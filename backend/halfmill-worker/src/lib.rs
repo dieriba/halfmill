@@ -1,3 +1,14 @@
-mod jobs;
+use serde::Serialize;
 
-pub use jobs::*;
+pub mod jobs;
+
+#[derive(Debug, Serialize)]
+pub struct ScriptOutput {
+    output: String,
+}
+
+impl ScriptOutput {
+    pub fn new(output: String) -> Self {
+        Self { output }
+    }
+}
