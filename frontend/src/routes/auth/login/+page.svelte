@@ -9,13 +9,13 @@
 	export let form;
 </script>
 
-<Section name="register">
+<Section name="login">
 	<Register>
 		<div class="w-[500px] space-y-4 p-6 sm:p-8 md:space-y-6">
 			<form
 				method="POST"
 				class="flex flex-col space-y-6"
-				action="?/register"
+				action="?/login"
 				use:enhance={() => {
 					isLoading = true;
 					return async ({ update }) => {
@@ -50,25 +50,12 @@
 						</Helper>
 					{/if}
 				</div>
-				<div>
-					<Label class="space-y-2">
-						<span>Confirm Password</span>
-						<Input type="password" name="confirmPassword" placeholder="•••••" />
-					</Label>
-					{#if form?.errors?.confirmPassword}
-						<Helper class="mt-2" color="red">
-							{#each form?.errors?.confirmPassword as message}
-								<span class="font-medium">{message}</span>
-							{/each}
-						</Helper>
-					{/if}
-				</div>
-				<Button type="submit" class="w-full1">Sign up</Button>
+				<Button type="submit" class="w-full1">Sign in</Button>
 				<p class="text-sm font-light text-gray-500 dark:text-gray-400">
-					Alreay have an account? <a
+					Don't have an account yet? <a
 						data-sveltekit-reload
-						href="/auth/signin"
-						class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a
+						href="/auth/signup"
+						class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a
 					>
 				</p>
 			</form>
