@@ -1,3 +1,4 @@
+import { parseCookie } from '$lib';
 import { fetchWrapper } from '$lib/fetchWrapper.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -11,7 +12,7 @@ type LoginType = z.infer<typeof LoginSchema>;
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-	login: async ({ cookies, request }) => {
+	login: async ({ cookies, request, fetch }) => {
 		const data = await request.formData();
 		const login: LoginType = {
 			username: data.get('username') as string,
@@ -27,7 +28,7 @@ export const actions = {
 			return fail(400, { success: false, errors: result.error.flatten().fieldErrors });
 		}
 
-		const response = await fetchWrapper.post('/auth/signin', login);
+		const response = await fetchWrapper.post(fetch, '/auth/signin', { data: login });
 
 		const res = await response.json();
 
@@ -38,11 +39,11 @@ export const actions = {
 		const cookieHeader = response.headers.get('Set-Cookie')?.split(',');
 
 		cookieHeader?.map((cookie) => {
-			console.log(cookie);
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const [{ key, value, path, maxAge, httpOnly }] = parseCookie(cookie);
+			cookies.set(key, value, { httpOnly, path, maxAge });
 		});
 
-		return { success: true };
-
-		//throw redirect(302, '/');
+		throw redirect(302, '/');
 	}
 };

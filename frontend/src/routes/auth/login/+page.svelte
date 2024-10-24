@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Section, Register } from 'flowbite-svelte-blocks';
-	import { Button, Label, Input, Helper } from 'flowbite-svelte';
+	import { Button, Label, Input, Helper, Spinner } from 'flowbite-svelte';
 	import { enhance } from '$app/forms';
 
-	let isLoading;
+	let isLoading = false;
 
 	/** @type {import('./$types').ActionData} */
 	export let form;
@@ -50,7 +50,13 @@
 						</Helper>
 					{/if}
 				</div>
-				<Button type="submit" class="w-full1">Sign in</Button>
+				<Button type="submit" class="w-full1">
+					{#if isLoading == false}
+						Sign in
+					{:else}
+						<Spinner />
+					{/if}
+				</Button>
 				<p class="text-sm font-light text-gray-500 dark:text-gray-400">
 					Don't have an account yet? <a
 						data-sveltekit-reload

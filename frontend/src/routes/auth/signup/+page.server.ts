@@ -40,12 +40,13 @@ export const actions = {
 			return fail(400, { success: false, errors: result.error.flatten().fieldErrors });
 		}
 
-		const response = await fetchWrapper.post('/auth/signup', register);
+		const response = await fetchWrapper.post(fetch, '/auth/signup', { data: register });
 
 		const res = await response.json();
+		console.log(res);
 
 		const success = response.status < 400;
 
-		return { success, message: res.message };
+		return { success, message: Array.isArray(res.message) ? res.message : [res.message] };
 	}
 };
