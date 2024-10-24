@@ -24,7 +24,7 @@ export const parseCookie = (cookieToParse: string): [Cookie, boolean] => {
 			value: error ? '' : parsedCookie[1],
 			httpOnly: true,
 			path: map.get('Path') ?? '/',
-			maxAge: Number(map.get('Max-Age') ?? 2147483647)
+			maxAge: Number(map.get('Max-Age') ?? Number.MAX_VALUE)
 		},
 		error
 	];

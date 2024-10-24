@@ -25,6 +25,7 @@
 		"flowbite-svelte-blocks": "^1.1.4",
 		"flowbite-svelte-icons": "^1.6.2",
 		"globals": "^15.11.0",
+		"monaco-editor": "^0.52.0",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
 		"prettier-plugin-tailwindcss": "^0.6.8",

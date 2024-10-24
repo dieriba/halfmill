@@ -1,4 +1,4 @@
-import { parseCookie } from '$lib';
+import { parseCookie } from '$lib/cookieParser.js';
 import { fetchWrapper } from '$lib/fetchWrapper.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -44,6 +44,6 @@ export const actions = {
 			cookies.set(key, value, { httpOnly, path, maxAge });
 		});
 
-		throw redirect(302, '/');
+		redirect(302, '/');
 	}
 };

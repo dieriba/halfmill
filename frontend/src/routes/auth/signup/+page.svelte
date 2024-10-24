@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Section, Register } from 'flowbite-svelte-blocks';
-	import { Button, Label, Input, Helper } from 'flowbite-svelte';
+	import { Button, Label, Input, Helper, Spinner } from 'flowbite-svelte';
 	import { enhance } from '$app/forms';
 
-	let isLoading;
+	let isLoading = false;
 
 	/** @type {import('./$types').ActionData} */
 	export let form;
@@ -12,6 +12,22 @@
 <Section name="register">
 	<Register>
 		<div class="w-[500px] space-y-4 p-6 sm:p-8 md:space-y-6">
+			{#if form}
+				{#if form.success && form.message}
+					{#each form.message as message}
+						<Helper class="mt-2" color="green">
+							<span class="block font-medium">{message}</span>
+						</Helper>
+					{/each}
+				{:else if form.success == false && form.message}
+					{#each form.message as message}
+						<Helper class="mt-2" color="red">
+							<span class="block font-medium">{message}</span>
+						</Helper>
+					{/each}
+				{/if}
+			{/if}
+
 			<form
 				method="POST"
 				class="flex flex-col space-y-6"
@@ -40,7 +56,7 @@
 				<div>
 					<Label class="space-y-2">
 						<span>Password</span>
-						<Input type="password" name="password" placeholder="•••••" />
+						<Input type="password" name="password" placeholder="••••••••" />
 					</Label>
 					{#if form?.errors?.password}
 						<Helper class="mt-2" color="red">
@@ -53,7 +69,7 @@
 				<div>
 					<Label class="space-y-2">
 						<span>Confirm Password</span>
-						<Input type="password" name="confirmPassword" placeholder="•••••" />
+						<Input type="password" name="confirmPassword" placeholder="••••••••" />
 					</Label>
 					{#if form?.errors?.confirmPassword}
 						<Helper class="mt-2" color="red">
@@ -63,7 +79,13 @@
 						</Helper>
 					{/if}
 				</div>
-				<Button type="submit" class="w-full1">Sign up</Button>
+				<Button type="submit" class="w-full1"
+					>{#if isLoading == false}
+						Sign up
+					{:else}
+						<Spinner />
+					{/if}
+				</Button>
 				<p class="text-sm font-light text-gray-500 dark:text-gray-400">
 					Alreay have an account? <a
 						data-sveltekit-reload
@@ -75,4 +97,3 @@
 		</div>
 	</Register>
 </Section>
-
