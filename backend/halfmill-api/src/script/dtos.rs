@@ -13,10 +13,10 @@ pub struct ScriptDto {
 
 fn is_supported_language(language: &str) -> Result<(), ValidationError> {
     match language {
-        "python" => Ok(()),
+        "javascript" => Ok(()),
         _ => {
             let validation_error = ValidationError::new("");
-            let message = Cow::from(format!("`{}` language is not supported, only `python` is supported language", language));
+            let message = Cow::from(format!("`{}` language is not supported, only `javascript` is supported language", language));
             Err(validation_error.with_message(message))
         }
     }

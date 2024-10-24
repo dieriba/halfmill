@@ -6,18 +6,21 @@ use chrono::Utc;
 
 use crate::ScriptOutput;
 pub async fn run_script(code: String) -> Result<impl IntoResponse, HttpError> {
-    let path = format!("/tmp/half-mill/python/{}.py", Utc::now().timestamp());
+    let path = format!("/tmp/half-mill/javascript/{}.js", Utc::now().timestamp());
     let mut file = File::options()
         .create(true)
         .truncate(true)
         .write(true)
         .open(&path)
         .await
-        .map_err(|_| HttpError::internal_server_error())?;
+        .map_err(|e| {
+            println!("{:#?}", e);
+            HttpError::internal_server_error()
+        })?;
     file.write_all(code.as_bytes())
         .await
         .map_err(|_| HttpError::internal_server_error())?;
-    let output = Command::new("python3")
+    let output = Command::new("node")
         .arg(path)
         .output()
         .await

@@ -11,7 +11,8 @@ use super::dtos::{CreateUserDto, LoginUserDto};
 use halfmill_common::{
     config::{config, Config},
     constant_message::WRONG_CREDENTIALS,
-    Claims, HttpError, JWTManager, UserAction, UserIdWithPassword, UserWithPassword,
+    Claims, HttpError, JWTManager, ServerResponse, UserAction, UserIdWithPassword,
+    UserWithPassword,
 };
 use uuid::Uuid;
 
@@ -27,7 +28,12 @@ pub async fn signup(
     let password = state.password_manager.hash_password(password.as_bytes())?;
     let user =
         UserAction::create(&state.database, UserWithPassword::new(username, password)).await?;
-    Ok(Json(user))
+    Ok(ServerResponse::new(
+        user,
+        "Account created successfully!".to_string(),
+        Some(StatusCode::CREATED),
+    )
+    .into_response())
 }
 
 pub async fn signin(

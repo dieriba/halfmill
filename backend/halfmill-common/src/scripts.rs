@@ -1,1 +1,1 @@
-pub const SUPPORTED_SCRIPTS: [&str; 1] = ["python"];
+pub const SUPPORTED_SCRIPTS: [&str; 1] = ["javascript"];
